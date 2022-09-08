@@ -1,0 +1,22 @@
+# create spring postgresql properties
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+  datasource:
+      url: jdbc:postgresql://localhost:5432/postgres
+      username: postgres
+      password: postgres
+      driver-class-name: org.postgresql.Driver
+  redis:
+    host: localhost
+    port: 6379
+    timeout: 10000ms
+    database: 0
+  cache:
+    type: redis
+    redis:
+      time-to-live: 30
+      cache-null-values: false
