@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import static java.lang.Thread.sleep;
@@ -21,6 +22,7 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
     // create a logger
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -33,33 +35,28 @@ public class UserServiceImpl implements UserService {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found with id " + id));
-    }
-    @Override
-    public User createUser(User user) {
-        var createdUser = userRepository.save(user);
-        cacheUser(createdUser);
-        return createdUser;
+        return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found with id " + id));
     }
 
-    @Cacheable(value = "user", key = "#createdUser.id")
-    public void cacheUser(User createdUser) { // dummy code for example
-        logger.debug("Caching user with id {}", createdUser.getId());
+    // it is not worth to use CacheEvict for user creation, just for the example.
+    @Caching(evict = {@CacheEvict( value = "user", allEntries = true)})
+    @Override
+    public User createUser(User user) {
+        return userRepository.save(user);
     }
+
 
     @CachePut(cacheNames = "user", key = "#user.id")
     @Override
-    public User updateUser(User user) {
-        return userRepository.findById(user.getId())
-                .map(u -> {
-                    u.setName(user.getName());
-                    u.setSurname(user.getSurname());
-                    u.setAge(user.getAge());
-                    return userRepository.save(u);
-                })
-                .orElseThrow(() -> new UserNotFoundException("User not found with id " + user.getId()));
+    public User updateUser(String id, User user) {
+        return userRepository.findById(Long.valueOf(id)).map(u -> {
+            u.setName(user.getName());
+            u.setSurname(user.getSurname());
+            u.setAge(user.getAge());
+            return userRepository.save(u);
+        }).orElseThrow(() -> new UserNotFoundException("User not found with id " + user.getId()));
     }
+
     @CacheEvict(cacheNames = "user", key = "#id")
     @Override
     public void deleteUser(Long id) {

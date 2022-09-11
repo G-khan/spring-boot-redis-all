@@ -36,9 +36,9 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    @PutMapping(value = "/users")
-    public ResponseEntity<Object> updateUser(@RequestBody User user) {
-        User updatedUser = userService.updateUser(user);
+    @PutMapping(value = "/users/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable("id") String id, @RequestBody User user) {
+        User updatedUser = userService.updateUser(id, user);
         log.info("User is updated {}", updatedUser);
         return ResponseEntity.ok(updatedUser);
     }

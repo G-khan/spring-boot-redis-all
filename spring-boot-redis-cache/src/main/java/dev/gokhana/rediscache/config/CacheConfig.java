@@ -36,13 +36,6 @@ public class CacheConfig {
 
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
-        RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig() //
-                .prefixCacheNameWith(this.getClass().getPackageName() + ".") //
-                .entryTtl(Duration.ofHours(1)) //
-                .disableCachingNullValues();
-
-        return RedisCacheManager.builder(connectionFactory) //
-                .cacheDefaults(config) //
-                .build();
+        return RedisCacheManager.builder(connectionFactory).build();
     }
 }
