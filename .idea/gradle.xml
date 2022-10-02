@@ -21,6 +21,15 @@
           </set>
         </option>
       </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/spring-data-redis-cache" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/spring-data-redis-cache" />
+          </set>
+        </option>
+      </GradleProjectSettings>
     </option>
   </component>
 </project>
